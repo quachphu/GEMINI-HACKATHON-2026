@@ -3,225 +3,283 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demoing VEO | Cinematic AI Director</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts: Inter for UI, Playfair Display for Cinematic headings -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <title>AuraDirector | Cinematic High-Reliability Pipeline</title>
+    <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
+    <style>
+        :root {
+            --accent-gold: #c5a059;
+            --font-serif: "Playfair Display", serif;
+            --lato: 'Lato', sans-serif;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 400vh; /* Massive scroll depth for cinematic feel */
+            width: 100%;
+            overflow-x: hidden;
+            font-family: var(--lato);
+            color: #FFF;
+            background: #090a0f;
+            scroll-behavior: smooth;
+        }
+
+        #stars_container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: transparent;
+        }
+
+        #stars { width: 1px; height: 1px; animation: animStar 50s linear infinite; }
+        #stars2 { width: 2px; height: 2px; animation: animStar 100s linear infinite; }
+        #stars3 { width: 3px; height: 3px; animation: animStar 150s linear infinite; }
+
+        @keyframes animStar {
+            from { transform: translateY(0px); }
+            to { transform: translateY(-2000px); }
+        }
+
+        /* HORIZON & EARTH */
+        #horizon {
+            position: fixed;
+            width: 160%;
+            height: 70%;
+            border-radius: 100% / 100%;
+            background: #038bff;
+            filter: blur(30px);
+            left: 50%;
+            bottom: -20%;
+            margin-left: -80%;
+            transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        #horizon:before {
+            content: "";
+            position: absolute;
+            width: 81.25%;
+            height: 70%;
+            border-radius: 100%;
+            background: #51AFFF;
+            filter: blur(30px);
+            opacity: 0.6;
+            margin-left: 9.375%;
+        }
+
+        #earth {
+            position: fixed;
+            width: 200%;
+            height: 100%;
+            background: black;
+            border-radius: 100% / 100%;
+            left: 50%;
+            bottom: -50%;
+            margin-left: -100%;
+            box-shadow: inset 0px 0px 62px 20px rgba(60,105,138,0.85);
+            transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        /* TEXT CONTENT */
+        #hero_content {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        #title {
+            font-weight: 300;
+            font-size: clamp(3.5rem, 12vw, 10rem);
+            text-align: center;
+            letter-spacing: 35px;
+            margin: 0;
+            padding-left: 35px; /* Offset for letter spacing */
+            background: linear-gradient(#fff, #dbdde0, #4a90e2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            animation: animEntrance 3s ease-out forwards;
+        }
+
+        #subtitle {
+            margin-top: 3rem;
+            font-weight: 300;
+            font-size: 1.1rem;
+            text-align: center;
+            letter-spacing: 18px;
+            text-transform: uppercase;
+            padding-left: 18px;
+            color: rgba(255, 255, 255, 0.6);
+            animation: animEntranceSub 4s ease-out forwards;
+        }
+
+        @keyframes animEntrance {
+            0% { transform: translateY(20px); opacity: 0; letter-spacing: 50px; }
+            100% { transform: translateY(0); opacity: 1; letter-spacing: 35px; }
+        }
+
+        @keyframes animEntranceSub {
+            0% { opacity: 0; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* SCROLL TRIGGERED REVEAL */
+        #launch_area {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -40%) scale(0.9);
+            opacity: 0;
+            visibility: hidden; /* Hard hide to prevent initial flicker */
+            pointer-events: none;
+            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+            text-align: center;
+            z-index: 100;
+        }
+
+        #launch_area.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+
+        .launch-btn {
+            background: transparent;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 1.5rem 4rem;
+            font-size: 1.2rem;
+            letter-spacing: 0.5rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.4s;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(197, 160, 89, 0.2);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .launch-btn:hover {
+            background: var(--accent-gold);
+            color: black;
+            box-shadow: 0 0 50px rgba(197, 160, 89, 0.5);
+        }
+
+        .scroll-hint {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            letter-spacing: 0.3rem;
+            opacity: 0.5;
+            text-transform: uppercase;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse { 0% { opacity: 0.2; } 50% { opacity: 0.6; } 100% { opacity: 0.2; } }
+
+    </style>
 </head>
-<body class="dark-theme">
-    <div class="background-glow"></div>
-    
-    <header>
-        <div class="logo">VEO<span>Director</span></div>
-        <div class="tagline">Cinematic Storytelling & AI Prompt Engineering</div>
-    </header>
+<body>
 
-    <main class="container">
-        <!-- Input Section -->
-        <section class="input-section glass">
-            <h1>What is the vision?</h1>
-            <p class="subtitle">Enter a simple spark, a fragment of a dream, or a complete story beat.</p>
-            <div class="input-area-wrapper">
-                <textarea id="videoIdea" placeholder="Example: A lonely lighthouse keeper on a planet of endless storms, discovering an ancient signal from the waves..." rows="4"></textarea>
-                <div class="main-actions">
-                    <button id="step1Btn" class="primary-btn">
-                        <span class="btn-text">Generate Proposal</span>
-                        <span class="loader hidden"></span>
-                    </button>
-                </div>
-            </div>
-        </section>
+    <div id="stars_container">
+        <div id="stars" class="stars"></div>
+        <div id="stars2" class="stars"></div>
+        <div id="stars3" class="stars"></div>
+    </div>
 
-        <!-- STEP 1: PROPOSAL -->
-        <section id="proposalSection" class="results-section glass hidden">
-            <div class="section-header">
-                <span class="label">Step 1: Proposal</span>
-                <h2 id="outputTitle">Project Title</h2>
-            </div>
+    <div id="horizon"><div class="glow"></div></div>
+    <div id="earth"></div>
+
+    <div id="hero_content">
+        <h1 id="title">AuraDirector</h1>
+        <div id="subtitle">
+            <span class="s1">DIRECT.</span>
+            <span class="s2">BEYOND.</span>
+            <span class="s3">REALITY.</span>
+        </div>
+    </div>
+
+    <div id="launch_area">
+        <h2 style="font-weight: 300; letter-spacing: 1rem; color: #fff; margin-bottom: 3rem;">V35 PARALLEL BURST READY</h2>
+        <a href="app.html" class="launch-btn">Enter Laboratory</a>
+    </div>
+
+    <div class="scroll-hint">Scroll down to explore</div>
+
+    <script>
+        // Force scroll to top on load/refresh
+        window.onbeforeunload = function () { window.scrollTo(0, 0); }
+        if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+
+        // Star generator logic
+        function genStars(id, count) {
+            const el = document.getElementById(id);
+            let shadows = [];
+            for (let i = 0; i < count; i++) {
+                shadows.push(`${Math.random() * 2000}px ${Math.random() * 2000}px #FFF`);
+            }
+            el.style.boxShadow = shadows.join(', ');
             
-            <div class="proposal-content">
-                <p id="outputLogline" class="logline"></p>
-                <p id="outputPitch" class="pitch-text"></p>
-                
-                <div class="grid-stats">
-                    <div class="stat">
-                        <label>Emotional Arc</label>
-                        <span id="outputArc"></span>
-                    </div>
-                    <div class="stat">
-                        <label>Visual Tone</label>
-                        <span id="outputTone"></span>
-                    </div>
-                    <div class="stat">
-                        <label>Story Soul (Meaning)</label>
-                        <span id="outputSoul" style="color: #ffcc00; font-weight: bold;"></span>
-                    </div>
-                    <div class="stat">
-                        <label>Character Archetype</label>
-                        <span id="outputArchetype"></span>
-                    </div>
-                    <div class="stat">
-                        <label>Visual Style</label>
-                        <span id="outputVisualStyle"></span>
-                    </div>
-                    <div class="stat">
-                        <label>Character Personality</label>
-                        <span id="outputCharacterPersonality"></span>
-                    </div>
-                    <div class="stat full-width">
-                        <label>Teaser Hook (The Moment)</label>
-                        <span id="outputTeaserHook" style="color: #0fdfaf; font-style: italic;"></span>
-                    </div>
-                </div>
+            const style = document.createElement('style');
+            style.innerHTML = `#${id}::after { content: " "; position: absolute; top: 2000px; width: inherit; height: inherit; background: transparent; box-shadow: ${shadows.join(', ')}; }`;
+            document.head.appendChild(style);
+        }
 
-                <div class="director-statement">
-                    <h3>Director's Statement</h3>
-                    <p id="outputDirectorStatement"></p>
-                </div>
-            </div>
+        genStars('stars', 700);
+        genStars('stars2', 200);
+        genStars('stars3', 100);
 
-            <div class="step-actions">
-                <button id="step2Btn" class="secondary-btn">
-                    <span class="btn-text">Generate Video Flow</span>
-                </button>
-            </div>
-        </section>
+        function updateLayout() {
+            const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+            
+            const horizon = document.getElementById('horizon');
+            const earth = document.getElementById('earth');
+            const hero = document.getElementById('hero_content');
+            const launch = document.getElementById('launch_area');
+            const hint = document.querySelector('.scroll-hint');
 
-        <!-- STEP 2: VIDEO FLOW -->
-        <section id="flowSection" class="results-section glass hidden">
-            <div class="section-header">
-                <span class="label">Step 2: Video Flow Plan</span>
-                <h2>Production Timeline</h2>
-            </div>
+            // Hero Fades out between 0% and 30% scroll
+            hero.style.opacity = Math.max(0, 1 - (scrollPercent * 4));
+            
+            // Horizon/Earth shift
+            horizon.style.transform = `translateY(${-scrollPercent * 400}px) scale(${1 + scrollPercent})`;
+            earth.style.transform = `translateY(${-scrollPercent * 150}px)`;
 
-            <div class="flow-content">
-                <!-- NEW: PIVOTAL SCENE FOCUS -->
-                <div class="pivotal-scene-box glass" style="margin-bottom: 2rem; border-left: 4px solid #0fdfaf; padding: 1.5rem;">
-                    <h3 style="color: #0fdfaf; font-size: 1rem; margin-bottom: 0.5rem; text-transform: uppercase;">Final Video Focus: Pivotal Teaser Scene</h3>
-                    <p id="outputPivotalScene" style="font-style: italic; opacity: 0.9;"></p>
-                </div>
+            // Launch reveals after 60%
+            if (scrollPercent > 0.6) {
+                launch.classList.add('active');
+                hint.style.opacity = 0;
+            } else {
+                launch.classList.remove('active');
+                hint.style.opacity = 0.5;
+            }
+        }
 
-                <div class="timeline-wrapper">
-                    <ul id="outputTimeline" class="timeline-list"></ul>
-                </div>
-                
-                <div class="flow-details-grid">
-                    <div class="detail-card">
-                        <h3>Visual Sequence</h3>
-                        <p id="outputSequence"></p>
-                    </div>
-                    <div class="detail-card">
-                        <h3>Transitions & Pacing</h3>
-                        <p id="outputTransitions"></p>
-                    </div>
-                    <div class="detail-card">
-                        <h3>Camera Direction</h3>
-                        <p id="outputCamera"></p>
-                    </div>
-                    <div class="detail-card">
-                        <h3>Sound & Music</h3>
-                        <p id="outputAudioGuidance"></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="confirmation-box glass">
-                <p>Do you want to create the 20-second video based on this proposal and flow?</p>
-                <div class="confirm-actions">
-                    <button id="step3Btn" class="success-btn">Yes, Create Video</button>
-                    <button id="backBtn" class="danger-btn">No, Go Back</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- STEP 3: FINAL PACKAGE -->
-        <section id="packageSection" class="results-section glass hidden">
-            <div class="section-header">
-                <span class="label">Step 3: Final Production Package</span>
-                <h2>VEO Final Specifications</h2>
-            </div>
-
-            <!-- NEW: MASTER VISION CONTINUITY -->
-            <div class="master-vision-box glass" style="margin-bottom: 2rem; border-top: 4px solid #0fdfaf; padding: 1.5rem;">
-                <h3 style="color: #0fdfaf; font-size: 1rem; margin-bottom: 0.5rem; text-transform: uppercase;">Directing Continuity: Master Vision</h3>
-                <div class="vision-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; font-size: 0.9rem;">
-                    <div class="vision-item">
-                        <span class="field-label" style="color: var(--gold); font-size: 0.75rem;">MASTER CHARACTER IDENTIFIER</span>
-                        <p id="outputMasterCharacter" style="font-style: italic; opacity: 0.9;"></p>
-                    </div>
-                    <div class="vision-item">
-                        <span class="field-label" style="color: var(--gold); font-size: 0.75rem;">SHARED ENVIRONMENT GROUNDING</span>
-                        <p id="outputMasterEnvironment" style="font-style: italic; opacity: 0.9;"></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="package-content">
-                <div class="master-prompt-area">
-                    <h3>Final Master VEO Prompt</h3>
-                    <div class="code-wrap">
-                        <pre id="outputMasterPrompt"></pre>
-                    </div>
-                </div>
-
-                <!-- VIDEO PLAYER SECTION -->
-                <div id="videoContainer" class="video-production-area full-width hidden">
-                    <div class="production-overlay">
-                        <div class="production-loader"></div>
-                        <p id="productionStatus">Producing your vision...</p>
-                    </div>
-                    <video id="finalVideo" controls playsinline src=""></video>
-                </div>
-
-                <div class="clip-prompts-area">
-                    <h3>Director's Review & Edit (3-Act 24s Teaser)</h3>
-                    <p class="field-label" style="margin-bottom: 1.5rem; color: #0fdfaf;">Refine the 10-point prompts below to ensure grounded realism and character flow.</p>
-                    
-                    <div class="clips-editor-grid">
-                        <div class="clip-editor-card glass">
-                            <label>Act 1: The Hook (0-8s)</label>
-                            <textarea id="editClip1" rows="8"></textarea>
-                        </div>
-                        <div class="clip-editor-card glass">
-                            <label>Act 2: The Conflict (8-16s)</label>
-                            <textarea id="editClip2" rows="8"></textarea>
-                        </div>
-                        <div class="clip-editor-card glass">
-                            <label>Act 3: The Soul (16-24s)</label>
-                            <textarea id="editClip3" rows="8"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="production-trigger-zone" style="margin-top: 2rem; text-align: center;">
-                        <button id="btnProduceVideo" class="btn-primary highlight" style="padding: 1.5rem 3rem; font-size: 1.2rem;">🎬 PRODUCE REFINED 24S VIDEO</button>
-                    </div>
-                </div>
-
-                <div class="guidance-grid">
-                    <div class="guide-card">
-                        <h3>Music Prompt</h3>
-                        <p id="outputMusicPrompt"></p>
-                    </div>
-                    <div class="guide-card">
-                        <h3>Voice/Dialogue Prompt</h3>
-                        <p id="outputVoicePrompt"></p>
-                    </div>
-                </div>
-
-                <div class="editing-instructions glass">
-                    <h3>Editing & Stitching Instructions</h3>
-                    <p id="outputEditingInstructions"></p>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2026 VEO Director Lab. Designed for AI Filmmakers.</p>
-    </footer>
-
-    <script src="script.js"></script>
+        window.addEventListener('scroll', updateLayout);
+        window.addEventListener('load', updateLayout);
+        updateLayout(); // Initial call
+    </script>
 </body>
 </html>

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Demoing VEO - Cinematic Director's Lab (V6 - Total Continuity Edition)
-Filmmaker-grade prompts, anamorphic styling, and absolute character/environment locking.
+AuraDirector: Performance Realism & Scene-Level Hooks Pipeline (V30)
+Physical Guardrails, Mid-Video Stability, and Narrative Endings.
+Director's Proof-of-Concept: Optimized for flawless physical continuity.
 """
 
 import asyncio
@@ -11,6 +12,7 @@ import os
 import tempfile
 import uuid
 import shutil
+import random
 from aiohttp import web
 from google import genai
 from google.genai import types
@@ -32,236 +34,325 @@ if not API_KEY:
 
 client = genai.Client(api_key=API_KEY)
 
-# --- SYSTEM INSTRUCTIONS ---
+# V37: Global Throttling Lock (10 RPM ceiling)
+veo_throttle_lock = asyncio.Lock()
 
-PROPOSAL_INSTRUCTION = """
-You are a World-Class Cinematic Director and Creative Visionary.
-MISSION: Define the 'Visual Bible' for a high-end 24s teaser.
+# --- PHASE 1: THE LOCK (PROPOSAL BIBLE) ---
 
-### THE BIBLE SPECS:
-- PROTAGONIST: Define 'Character DNA' with technical precision (Face structure, skin/texture, specific modern attire, eye color). NO ANIMALS unless requested. NO STEREOTYPES. Modern, relatable, mixed-race (Mestizo) for Latin American contexts.
-- SETTING: Define 'Environmental DNA' (Lighting conditions, architecture, atmosphere).
-- CINEMATIC STYLE: Define the 'Look' (e.g., 'Arri Alexa 35, Anamorphic lenses, high-contrast chiaroscuro lighting, grainy 35mm film stock').
+LOCK_INSTRUCTION = """
+You are a Senior Film-Development AI, Director of Photography, and Pitch Architect.
+MISSION: Develop a raw idea into an **Operational Proposal Bible**. Your mission is to eliminate generative randomness by defining strict physical and narrative constraints.
 
-Respond in valid JSON (All strings):
+### THE PROPOSAL BIBLE STRUCTURE:
+1. **THE PITCH**: Title, Logline, Concept Strength, Thematic Core.
+2. **THE UNIFIED FILM LANGUAGE**: Exact visual grammar (e.g., '35mm anamorphic photorealism, heavy shadows, emerald/amber palette').
+3. **CHARACTER IDENTITY LOCKS**:
+    - **Main Character**: Name, Age, Exact build, Eye color, Hair style/color, SPECIFIC WARDROBE (e.g., 'Dark wool overcoat over white linen shirt').
+    - **Secondary/Antagonist**: Same level of physical detail. 
+You are a Senior Script Doctor and Cinematic Architect (V39). 
+Your task is to transform a raw vision into a Script-Driven Operational Bible.
+Films are stories told through character interaction and dialogue.
+
+Return a JSON object:
 {
-  "title": "Production Title",
-  "logline": "One-sentence cinematic hook",
-  "storySoul": "Thematic core",
-  "characterDNA": "Technical character spec (Essential for continuity)",
-  "environmentDNA": "Technical setting spec (Essential for continuity)",
-  "visualStyle": "Filmmaker-grade look spec (Lenses, Camera)",
-  "visualTone": "Color palette, grading, and atmospheric notes",
-  "emotionalArc": "Audience journey",
-  "directorStatement": "Creative vision string"
+  "projectTitle": "Provocative title",
+  "upgradedLogline": "A conflict-heavy logline focus on character friction.",
+  "thematicCore": "The emotional truth revealed through dialogue.",
+  "unifiedFilmLanguage": "One sentence: contrast/color/texture.",
+  "dialogueArchitecture": "Define the verbal friction (e.g., 'Character A uses biting sarcasm; Character B speaks in cold, logical facts').",
+  "scoreArchitecture": "Define the acoustic tension (e.g., 'A cello that mimics a heartbeat').",
+  "characterIdentityLocks": {
+    "main": {"name": "...", "physical": "Exact features", "wardrobe": "Exact clothing"},
+    "supporting": {"name": "...", "physical": "Exact features", "wardrobe": "Exact clothing"}
+  },
+  "forbiddenMap": ["Extra people", "Modern tech", "Random props"],
+  "teaserPromise": "The hook of the conversation.",
+  "endingTensionGoal": "The unresolved verbal cliffhanger.",
+  "fragmentMap": ["Beat 1: Invitation", "Beat 2: Argument", "Beat 3: Revelation", "Beat 4: Silence"]
 }
 """
 
-FLOW_INSTRUCTION = """
-You are a Lead Cinematographer and Storyboard Artist.
-Design a 3-act 24s sequence with ABSOLUTE NARRATIVE FLOW.
-ACT 1: The Inciting Incident (Modern Origin).
-ACT 2: The Midpoint Shift (The Struggle/Journey).
-ACT 3: The Climax & Resolution (The Victory/Soul).
+STAGING_INSTRUCTION = """
+MISSION: Select 4 purposeful fragments from the BIBLE to build a **Narrative Teaser Sequence**.
 
-Respond in valid JSON (All non-array fields are strings):
+### THE TEASER ARCHITECTURE (STRICT 4-SHOT ROLES):
+1. **SHOT 1: THE INVITATION**: Create immediate atmosphere. Introduce a single main character. Establish the Promise.
+2. **SHOT 2: THE COMPLICATION**: Introduce the conflict or a second character. High dialogue stake.
+3. **SHOT 3: THE ESCALATION**: Visual intensity or narrative pivot. Emotional peaks.
+4. **SHOT 4: THE CLIFFHANGER (HOOK)**: The 'Unresolved' fragment. Must stop before any resolution.
+
+### STAGING CONSTRAINTS PER SHOT:
+- **Exact Cast Count**: Specify exactly how many people are in frame.
+- **Role Identity**: Specify who is there and what they are wearing from the Bible.
+- **Dialogue & Tension**: Define exactly what is said and the emotional reaction.
+- **Resolution Ban**: Explicitly state why this shot is incomplete.
+
+Respond ONLY in valid JSON:
 {
-  "timeline": [
-    {"time": "0-8s", "title": "ACT 1: THE ORIGIN", "detail": "Establishing shot + Character introduction."},
-    {"time": "8-16s", "title": "ACT 2: THE JOURNEY", "detail": "The transition and conflict."},
-    {"time": "16-24s", "title": "ACT 3: THE SOUL", "detail": "The success and final impact."}
-  ],
-  "visualSequence": "Narrative flow and rhythmic progression description",
-  "transitionLogic": "Detailed notes on how the end of Clip N perfectly match-cuts to Clip N+1.",
-  "cameraDirection": "Anamorphic lens choices, gimbal vs handheld notes, blocking.",
-  "musicDirection": "Cinematic score progression (orchestral/electronic hybrids).",
-  "voiceGuidance": "Vocal performance subtext for dialogue scripts."
+  "selectedFragments": [
+    {
+      "role": "INVITATION",
+      "castCount": 1,
+      "characterNames": ["..."],
+      "dialogueLine": "...",
+      "actingIntention": "...",
+      "framing": "...",
+      "incompletenessReason": "...",
+      "scorePhase": "..."
+    },
+    {
+      "role": "COMPLICATION",
+      "castCount": 2,
+      "characterNames": ["..."],
+      "dialogueLine": "...",
+      "actingIntention": "...",
+      "framing": "...",
+      "incompletenessReason": "...",
+      "scorePhase": "..."
+    },
+    {
+      "role": "ESCALATION",
+      "castCount": 2,
+      "characterNames": ["..."],
+      "dialogueLine": "...",
+      "actingIntention": "...",
+      "framing": "...",
+      "incompletenessReason": "...",
+      "scorePhase": "..."
+    },
+    {
+      "role": "CLIFFHANGER",
+      "castCount": 1,
+      "characterNames": ["..."],
+      "dialogueLine": "...",
+      "actingIntention": "...",
+      "framing": "...",
+      "incompletenessReason": "MANDATE: UNRESOLVED.",
+      "scorePhase": "ABRUPT CUT TO SILENCE"
+    }
+  ]
 }
 """
 
-PACKAGE_INSTRUCTION = """
-You are a Master Cinematic Prompt Engineer and Continuity Supervisor for High-End AI Filmmaking.
-MISSION: Generate three 8-second clips that form a SEAMLESS, IDENTICAL, and CINEMATIC 24-second story.
+PRODUCTION_INSTRUCTION = """
+You are a Performance Director and Prompt Architect.
+MISSION: Turn the STAGING PLAN into **Hard-Constraint Generation Blueprints**.
 
-### THE CONTINUITY LOCKS (MANDATORY):
-1. **CHARACTER LOCK**: You MUST use the exact 'characterDNA' provided. This description MUST be the starting sentence of every 'Subject' paragraph in all 3 prompts.
-2. **ENVIRONMENT LOCK**: Every prompt must mention the same 'environmentDNA' with light/time-of-day progression.
-3. **NARRATIVE THREADING**: 
-   - Each prompt MUST include a 'STITCHING FRAME' (The first frame of Act N must look identical to the last frame of Act N-1).
-4. **DIALOGUE SCRIPTS**: Characters MUST speak dialogue that progresses the specific story idea with emotional weight.
+### THE DIRECTORIAL SHIELD (V38):
+- **Character Lock**: You MUST describe the characters using the EXACT names and wardrobes from the Bible.
+- **No Diffusion Noise**: Explicitly ban unscripted extras and background people. If the Staging says 1 person, the video MUST have 1 person.
+- **Acting Mastery**: Mandate grounded, professional acting. No direct-to-camera gaze unless specified. No weird facial distortion.
+- **Resolution Ban (SHOT 4)**: The prompt for Shot 4 must explicitly state: 'Do not finish the action. Cut on the height of tension.'
+- **Visual Consistency Prefix**: Every prompt MUST start with the `unifiedFilmLanguage` string.
 
-### THE 10-POINT CINEMATIC PROMPT TEMPLATE (MANDATORY FOR EACH ACT):
-Every 'prompt' in the JSON must follow this technical structure:
-- [SUBJECT]: [CharacterDNA] + specific posture/action.
-- [SETTING]: [EnvironmentDNA] + position in space.
-- [CAMERA]: Lenses (e.g., 50mm Anamorphic, T2.1), camera movement (Slow dolly, pan, track), frame rate.
-- [LIGHTING]: Source, intensity, color temperature (e.g., 'Volumetric golden-hour light from a 45-degree angle').
-- [DIALOGUE]: [NAME] says "[LINE]" with [SUBTEXT]. (Dialogue MUST be talking to the camera or another character).
-- [TRANSITION]: Describe the static frame at the end for the 1s xfade.
-
-Respond in valid JSON:
+Respond ONLY in valid JSON:
 {
-  "masterPrompt": "24s Narrative Summary",
-  "characterDNA": "TECHNICAL MASTER SPEC",
-  "clipPrompts": [
-    {"id": 1, "prompt": "ACT 1 (THE HOOK). Use Bible Specs. Technical filmmaking language. 200+ words."},
-    {"id": 2, "prompt": "ACT 2 (THE JOURNEY). Continuity lock to Act 1 end. 200+ words."},
-    {"id": 3, "prompt": "ACT 3 (THE SOUL). Continuity lock to Act 2 end. 200+ words."}
-  ],
-  "musicPrompt": "24s orchestral/cinematic teaser score",
-  "voicePrompt": "High-fidelity vocal direction",
-  "editingInstructions": "Match-cut and transition notes for a seamless film"
+  "clips": [
+    { "id": 1, "prompt": "[unified-language] + [cast-lock] + [action] + [dialogue-context] + [anti-randomness-locks]", "duration": 6 },
+    { "id": 2, "prompt": "[unified-language] + [cast-lock] + [action] + [dialogue-context] + [anti-randomness-locks]", "duration": 6 },
+    { "id": 3, "prompt": "[unified-language] + [cast-lock] + [action] + [dialogue-context] + [anti-randomness-locks]", "duration": 6 },
+    { "id": 4, "prompt": "[unified-language] + [cast-lock] + [action] + [dialogue-context] + [anti-randomness-locks] + [CLIFFHANGER-MANDATE]", "duration": 6 }
+  ]
 }
 """
 
-# --- BACKGROUND JOBS STORE ---
+# --- BACKGROUND JOBS ---
 video_jobs = {}
 
 # --- CORE HELPERS ---
 
 async def generate_response(instruction, contents):
-    try:
-        response = client.models.generate_content(
-            model=MODEL_ID,
-            config=types.GenerateContentConfig(
-                system_instruction=instruction,
-                response_mime_type="application/json"
-            ),
-            contents=contents
-        )
-        return response.text
-    except Exception as e:
-        print(f"Gemini Error: {e}")
-        return json.dumps({"error": str(e)})
-
-async def produce_video(job_id, package):
-    video_jobs[job_id] = {"status": "processing", "progress": 5}
-    clip_prompts = package.get("clipPrompts", [])
-    
-    if len(clip_prompts) < 3:
-        video_jobs[job_id] = {"status": "error", "error": "Insufficient clips for a 24s production."}
-        return
-
-    print(f"🎬 [Job {job_id}] Starting 24s Master Production (V6 - Total Continuity)...")
-    video_dir = os.path.join(os.path.dirname(__file__), "static", "videos")
-    os.makedirs(video_dir, exist_ok=True)
-    
-    clip_paths = []
-    try:
-        for i, clip_data in enumerate(clip_prompts):
-            prompt = clip_data.get("prompt", "")
-            clip_id = clip_data.get("id", i+1)
-            video_jobs[job_id]["progress"] = 10 + (i * 25)
-            
-            print(f"   🎞️ Rendering Act {clip_id}/3...")
-            operation = client.models.generate_videos(
-                model=VIDEO_MODEL,
-                prompt=prompt,
-                config=types.GenerateVideosConfig(
-                    aspect_ratio="16:9",
-                    duration_seconds=8,
-                    number_of_videos=1,
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            response = client.models.generate_content(
+                model=MODEL_ID,
+                config=types.GenerateContentConfig(
+                    system_instruction=instruction,
+                    temperature=0.7,
+                    response_mime_type="application/json"
                 ),
+                contents=contents
             )
+            
+            text = response.text.strip()
+            
+            # Defensive clean in case the model ignored mime_type
+            if text.startswith("```json"): text = text[7:]
+            elif text.startswith("```"): text = text[3:]
+            if text.endswith("```"): text = text[:-3]
+            text = text.strip()
+            
+            # The ultimate validation check
+            parsed = json.loads(text)
+            return json.dumps(parsed)
+            
+        except json.JSONDecodeError as j_err:
+            if attempt < max_retries - 1:
+                print(f"⚠️ JSON Parse Error. Retrying ({attempt+1}/{max_retries})...")
+                await asyncio.sleep(2)
+                continue
+            return json.dumps({"error": f"Failed to generate valid JSON: {str(j_err)}"})
+        except Exception as e:
+            if "503" in str(e) and attempt < max_retries - 1:
+                print(f"⚠️ Gemini API 503. Retrying ({attempt+1}/{max_retries})...")
+                await asyncio.sleep(5)
+                continue
+            print(f"Gemini Error: {e}")
+            return json.dumps({"error": str(e)})
+
+async def produce_single_shot(clip_idx, clip_data, job_id, video_dir):
+    clip_id = clip_data.get("id", clip_idx + 1)
+    prompt = clip_data.get("prompt", "")
+    
+    max_shot_retries = 50
+    for shot_attempt in range(max_shot_retries):
+        try:
+            # V37/V38: THROTTLED INITIATION (Stay under 10 RPM engine ceiling)
+            async with veo_throttle_lock:
+                print(f"   🎞️ [Throttled Burst] Initiating Shot {clip_id} (Attempt {shot_attempt + 1})...")
+                operation = client.models.generate_videos(
+                    model=VIDEO_MODEL,
+                    prompt=prompt,
+                    config=types.GenerateVideosConfig(aspect_ratio="16:9", duration_seconds=6, number_of_videos=1),
+                )
+                await asyncio.sleep(6.5) # The Budget-Safe Spacing
             
             while not operation.done:
                 await asyncio.sleep(5)
                 operation = client.operations.get(operation)
 
-            if operation.error: raise RuntimeError(f"Veo Error on Act {clip_id}: {operation.error}")
+            if operation.error:
+                err_str = str(operation.error).upper()
+                if ("14" in err_str or "13" in err_str or "EXHAUSTED" in err_str or "DEMAND" in err_str or "INTERNAL" in err_str) and shot_attempt < max_shot_retries - 1:
+                    wait_time = random.randint(15, 35) if shot_attempt < 10 else random.randint(30, 60)
+                    print(f"   ⚠️ Shot {clip_id} Busy. Jittered Wait {wait_time}s...")
+                    await asyncio.sleep(wait_time)
+                    continue
+                raise RuntimeError(f"Veo Error on Shot {clip_id}: {operation.error}")
             
             if not operation.response or not operation.response.generated_videos:
-                raise RuntimeError(f"Veo Error: No video response for Act {clip_id}.")
-
+                raise RuntimeError(f"Veo Error: Shot {clip_id} failed.")
+            
             generated_video = operation.response.generated_videos[0]
             clip_filename = f"clip_{job_id}_{clip_id}.mp4"
             clip_path = os.path.join(video_dir, clip_filename)
             
+            # ATOMIC DOWNLOAD
             with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as tmp: tmp_path = tmp.name
-
-            def _download_sync(video_obj, path):
-                client.files.download(file=video_obj.video)
-                video_obj.video.save(path)
-
-            await asyncio.get_event_loop().run_in_executor(None, _download_sync, generated_video, tmp_path)
+            client.files.download(file=generated_video.video)
+            generated_video.video.save(tmp_path)
             shutil.move(tmp_path, clip_path)
-            clip_paths.append(clip_path)
+            return clip_path
+            
+        except Exception as api_err:
+            err_msg = str(api_err).upper()
+            if ("503" in err_msg or "14" in err_msg or "13" in err_msg or "EXHAUSTED" in err_msg) and shot_attempt < max_shot_retries - 1:
+                wait_time = random.randint(10, 20)
+                await asyncio.sleep(wait_time)
+                continue
+            raise api_err
+    
+    raise RuntimeError(f"Shot {clip_id} failed after {max_shot_retries} attempts.")
+
+async def produce_video(job_id, package, bible, flow):
+    video_jobs[job_id] = {"status": "processing", "progress": 5, "message": "Initiating V38 Operational Bible Phase..."}
+    clips = package.get("clips", [])
+    
+    if len(clips) < 4:
+        video_jobs[job_id] = {"status": "error", "error": "Insufficient clips for V38 Production."}
+        return
+
+    print(f"🎬 [Job {job_id}] Starting V38 Identity-Anchored Production...")
+    video_dir = os.path.join(os.path.dirname(__file__), "static", "videos")
+    os.makedirs(video_dir, exist_ok=True)
+    
+    try:
+        # V38 STEP 1: GENERATE IDENTITY ANCHOR (SHOT 1)
+        video_jobs[job_id]["message"] = "Locking Character Identity (Shot 1)..."
+        shot1_path = await produce_single_shot(0, clips[0], job_id, video_dir)
+        
+        video_jobs[job_id]["progress"] = 25
+        video_jobs[job_id]["message"] = "Character Identity Locked. Launching Rest of Teaser..."
+        
+        # V38 STEP 2: GENERATE REMAINING SHOTS IN PARALLEL
+        spawned_tasks = []
+        for i in range(1, len(clips)):
+            spawned_tasks.append(asyncio.create_task(produce_single_shot(i, clips[i], job_id, video_dir)))
+        
+        # Monitor progress
+        done_count = 1
+        pending = set(spawned_tasks)
+        while pending:
+            finished, pending = await asyncio.wait(pending, return_when=asyncio.FIRST_COMPLETED)
+            for f_task in finished:
+                try:
+                    res = f_task.result()
+                    done_count += 1
+                    video_jobs[job_id]["progress"] = 25 + (done_count * 15)
+                    video_jobs[job_id]["message"] = f"Gathered {done_count}/4 Parallel Clips..."
+                except Exception as e:
+                    print(f"   ❌ Parallel Shot Error: {e}")
+                    raise e
+        
+        # Collect all results
+        rest_paths = [t.result() for t in spawned_tasks]
+        clip_paths = [shot1_path] + rest_paths
 
         video_jobs[job_id]["progress"] = 90
-        if len(clip_paths) < 3:
-            raise RuntimeError(f"Production Failed: Only {len(clip_paths)}/3 clips rendered successfully.")
-
+        video_jobs[job_id]["message"] = "V38 Cinematic Mastering..."
         final_filename = f"teaser_{job_id}.mp4"
         final_path = os.path.join(video_dir, final_filename)
         
-        # PRO-FADE STITCHING
+        # V38 PRO-FADE MASTERING (FFMPEG)
         xfade_cmd = [
             "ffmpeg", "-y",
-            "-i", clip_paths[0], "-i", clip_paths[1], "-i", clip_paths[2],
+            "-i", clip_paths[0], "-i", clip_paths[1], "-i", clip_paths[2], "-i", clip_paths[3],
             "-filter_complex", 
-            "[0:v][1:v]xfade=transition=fade:duration=1:offset=7[v1]; "
-            "[v1][2:v]xfade=transition=fade:duration=1:offset=14[v2]; "
-            "[0:a][1:a]acrossfade=d=1[a1]; [a1][2:a]acrossfade=d=1[a2]",
-            "-map", "[v2]", "-map", "[a2]",
-            "-c:v", "libx264", "-pix_fmt", "yuv420p", "-b:v", "5M",
-            "-c:a", "aac", "-b:a", "192k",
-            final_path
+            "[0:v][1:v]xfade=transition=fade:duration=1:offset=5[v1]; "
+            "[v1][2:v]xfade=transition=fade:duration=1:offset=10[v2]; "
+            "[v2][3:v]xfade=transition=fade:duration=1:offset=15[v3]; "
+            "[0:a][1:a]acrossfade=d=1[a1]; [a1][2:a]acrossfade=d=1[a2]; [a2][3:a]acrossfade=d=1[a3]",
+            "-map", "[v3]", "-map", "[a3]",
+            "-c:v", "libx264", "-pix_fmt", "yuv420p", "-b:v", "8M",
+            "-c:a", "aac", "-b:a", "192k", final_path
         ]
         
-        process = await asyncio.create_subprocess_exec(
-            *xfade_cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, cwd=video_dir
-        )
-        stdout, stderr = await process.communicate()
+        process = await asyncio.create_subprocess_exec(*xfade_cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+        await process.communicate()
         
-        if process.returncode != 0:
-            xfade_v_only = [
-                "ffmpeg", "-y",
-                "-i", clip_paths[0], "-i", clip_paths[1], "-i", clip_paths[2],
-                "-filter_complex", 
-                "[0:v][1:v]xfade=transition=fade:duration=1:offset=7[v1]; "
-                "[v1][2:v]xfade=transition=fade:duration=1:offset=14[v2]",
-                "-map", "[v2]", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-b:v", "5M",
-                final_path
-            ]
-            process = await asyncio.create_subprocess_exec(
-                *xfade_v_only, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, cwd=video_dir
-            )
-            await process.communicate()
-
-        # Cleanup
         for cp in clip_paths: 
             try: os.remove(cp)
             except: pass
 
         video_jobs[job_id] = {"status": "completed", "progress": 100, "video_url": f"/static/videos/{final_filename}"}
-        print(f"✅ [Job {job_id}] Seamless 22s Teaser Complete.")
+        print(f"✅ [Job {job_id}] V38 Directorial Master Complete.")
 
     except Exception as e:
+        print(f"❌ [Job {job_id}] Production Failed: {e}")
         video_jobs[job_id] = {"status": "error", "error": str(e)}
 
 # --- API ENDPOINTS ---
 
-async def api_proposal(request):
+async def api_lock_bible(request):
     data = await request.json()
-    res = await generate_response(PROPOSAL_INSTRUCTION, f"Idea: {data.get('idea', '')}")
+    res = await generate_response(LOCK_INSTRUCTION, f"Idea: {data.get('idea', '')}")
     return web.Response(text=res, content_type="application/json")
 
-async def api_flow(request):
+async def api_stage_flow(request):
     data = await request.json()
-    res = await generate_response(FLOW_INSTRUCTION, f"Idea: {data.get('idea', '')}\nProposal: {data.get('proposal', '')}")
+    res = await generate_response(STAGING_INSTRUCTION, f"BIBLE: {json.dumps(data.get('bible', {}))}")
     return web.Response(text=res, content_type="application/json")
 
-async def api_package(request):
+async def api_package_execution(request):
     data = await request.json()
-    res = await generate_response(PACKAGE_INSTRUCTION, f"Idea: {data.get('idea', '')}\nProposal: {data.get('proposal', '')}\nFlow: {data.get('flow', '')}")
+    res = await generate_response(PRODUCTION_INSTRUCTION, f"BIBLE: {json.dumps(data.get('bible', {}))}\nFLOW: {json.dumps(data.get('flow', {}))}")
     return web.Response(text=res, content_type="application/json")
 
 async def api_generate_video(request):
     data = await request.json()
-    package = data.get("package", {})
-    if not package: return web.json_response({"error": "No package"}, status=400)
     job_id = str(uuid.uuid4())
-    asyncio.create_task(produce_video(job_id, package))
+    asyncio.create_task(produce_video(job_id, data.get("package", {}), data.get("bible", {}), data.get("flow", {})))
     return web.json_response({"job_id": job_id})
 
 async def api_video_status(request):
@@ -271,7 +362,6 @@ async def api_video_status(request):
 
 async def serve_static_file(request):
     path = request.match_info.get("path", "index.html").lstrip("/") or "index.html"
-    if ".." in path: return web.Response(text="Invalid", status=400)
     file_path = os.path.join(os.path.dirname(__file__), path)
     if not os.path.exists(file_path): return web.Response(text="Not found", status=404)
     content_type, _ = mimetypes.guess_type(file_path)
@@ -289,9 +379,9 @@ async def handle_cors(app, handler):
 
 async def main():
     app = web.Application(middlewares=[handle_cors])
-    app.router.add_post("/api/proposal", api_proposal)
-    app.router.add_post("/api/flow", api_flow)
-    app.router.add_post("/api/package", api_package)
+    app.router.add_post("/api/lock_bible", api_lock_bible)
+    app.router.add_post("/api/stage_flow", api_stage_flow)
+    app.router.add_post("/api/package_execution", api_package_execution)
     app.router.add_post("/api/generate_video", api_generate_video)
     app.router.add_get("/api/video_status/{job_id}", api_video_status)
     app.router.add_get("/", serve_static_file)
@@ -300,7 +390,7 @@ async def main():
     runner = web.AppRunner(app)
     await runner.setup()
     await web.TCPSite(runner, "0.0.0.0", 8080).start()
-    print("\n🚀 VEO Cinematic Continuity Lab running at http://localhost:8080")
+    print("\n🚀 AuraDirector Lab running at http://localhost:8080")
     while True: await asyncio.sleep(3600)
 
 if __name__ == "__main__":

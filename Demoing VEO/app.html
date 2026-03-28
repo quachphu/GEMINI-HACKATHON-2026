@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraDirector | Cinematic Coherence & Anti-Randomness (V33)</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+    <div class="background-glow"></div>
+    
+    <header>
+        <div class="logo">Aura<span>Director</span></div>
+        <div class="tagline">Operational Bible & Identity Anchored | V38</div>
+    </header>
+
+    <main class="container">
+        <!-- PHASE 1: THE LOCK -->
+        <section class="input-section glass">
+            <span class="phase-label" style="color: var(--accent-gold); font-size: 0.8rem; letter-spacing: 0.3rem; text-transform: uppercase; margin-bottom: 1rem; display: block;">Phase 01: The Operational Bible</span>
+            <h1>Direct Your Vision</h1>
+            <p class="subtitle" style="color: var(--text-secondary); margin-bottom: 2.5rem;">Lock the physical DNA and narrative constraints of your film. No drift allowed.</p>
+            <textarea id="videoIdea" placeholder="E.g., A silent monk in a neon-drenched futuristic Tokyo who discovers a forbidden digital scroll..." rows="4"></textarea>
+            <div class="main-actions" style="text-align: center;">
+                <button id="lockBtn" class="primary-btn">
+                    <span class="btn-text">Lock Operational Bible</span>
+                    <span class="loader hidden"></span>
+                </button>
+            </div>
+        </section>
+
+        <!-- THE LOCKED CINEMATIC BIBLE BOARD -->
+        <section id="bibleSection" class="results-section glass hidden" style="border: 2px solid var(--accent-gold); margin-top: 5rem;">
+            <div class="section-header" style="border-bottom: 1px solid var(--glass-border); padding-bottom: 2rem; margin-bottom: 4rem; text-align: center;">
+                <span class="label" style="color: var(--accent-gold); font-size: 1rem; letter-spacing: 0.5rem; text-transform: uppercase;">THE OPERATIONAL BIBLE</span>
+                <h2 id="outputTitle" style="font-size: 4rem; margin-top: 1rem; font-weight: 300;">Project Title</h2>
+            </div>
+            
+            <div class="bible-content">
+                <!-- V38 IDENTITY DNA -->
+                <div class="titanium-dna-box glass relative" style="margin-bottom: 4rem; background: rgba(5, 5, 20, 0.9); padding: 4rem; border-radius: 12px; border: 1px solid #4a90e2;">
+                    <h3 style="color: #4a90e2; font-size: 1.2rem; margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 0.4em; text-align: center;">CHARACTER IDENTITY LOCKS (DNA)</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+                        <div id="mainCharBox">
+                            <label style="color: #4a90e2; font-size: 0.85rem; text-transform: uppercase; font-weight: bold;">[MAIN CHARACTER]</label>
+                            <p id="outputMainChar" style="font-family: var(--font-sans); font-size: 1.1rem; line-height: 1.6; color: var(--text-primary); margin-top: 1rem;"></p>
+                        </div>
+                        <div id="supportingCharBox" style="border-left: 1px solid rgba(74, 144, 226, 0.3); padding-left: 3rem;">
+                            <label style="color: #4a90e2; font-size: 0.85rem; text-transform: uppercase; font-weight: bold;">[SUPPORTING CAST]</label>
+                            <p id="outputSupportingChar" style="font-family: var(--font-sans); font-size: 1.1rem; line-height: 1.6; color: var(--text-primary); margin-top: 1rem;"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- V38 FORBIDDEN MAP -->
+                <div class="stat-card glass" style="padding: 2rem; border-left: 4px solid #e74c3c; background: rgba(20, 5, 5, 0.9); margin-bottom: 4rem;">
+                    <label style="color: #e74c3c; font-size: 0.8rem; letter-spacing: 0.2rem;">STRICT FORBIDDEN MAP (ANTI-RANDOMNESS)</label>
+                    <p id="outputForbiddenMap" style="font-family: var(--font-sans); font-size: 1.15rem; line-height: 1.5; color: #ffeb3b; margin-top: 1rem; font-weight: 600;"></p>
+                </div>
+
+                <div class="lock-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 3rem; margin-bottom: 4rem;">
+                    <div class="stat-card glass" style="padding: 2rem; border-left: 4px solid var(--accent-gold); background: #000;">
+                        <label>The Cinematic Logline</label>
+                        <p id="outputLogline" style="font-size: 1.15rem; color: var(--text-primary); margin-top: 1rem; line-height: 1.4; font-weight: 500;"></p>
+                    </div>
+                    <div class="stat-card glass" style="padding: 2rem; border-left: 4px solid #fff; background: #000;">
+                        <label>Thematic Core</label>
+                        <p id="outputThematicCore" style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-top: 0.5rem;"></p>
+                    </div>
+                </div>
+
+                <!-- V38 UNIFIED LANGUAGE -->
+                <div class="stat-card glass" style="padding: 2rem; margin-bottom: 4rem; border-top: 4px solid #f1c40f; text-align: center; background: rgba(5, 5, 5, 0.9);">
+                    <label style="color: #f1c40f; font-size: 1rem; letter-spacing: 0.3rem;">THE UNIFIED FILM LANGUAGE</label>
+                    <p id="outputUnifiedFilmLanguage" style="font-size: 1.4rem; color: #fff; margin-top: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1rem; line-height: 1.6;"></p>
+                </div>
+
+                <!-- V39 DYNAMIC SCRIPT CORE -->
+                <div class="lock-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 4rem;">
+                    <div class="stat-card glass" style="padding: 2rem; border-left: 4px solid #9b59b6; background: #000;">
+                        <label style="color: #9b59b6; font-size: 0.8rem; letter-spacing: 0.2rem;">THE DIALOGUE ARCHITECTURE</label>
+                        <p id="outputDialogueArchitecture" style="font-family: var(--font-serif); font-size: 1.3rem; line-height: 1.5; color: var(--text-primary); margin-top: 1rem;"></p>
+                    </div>
+                    <div class="stat-card glass" style="padding: 2rem; border-left: 4px solid #e67e22; background: #000;">
+                        <label style="color: #e67e22; font-size: 0.8rem; letter-spacing: 0.2rem;">THE SCORE ARCHITECTURE</label>
+                        <p id="outputScoreArchitecture" style="font-family: var(--font-serif); font-size: 1.3rem; line-height: 1.5; color: var(--text-primary); margin-top: 1rem;"></p>
+                    </div>
+                </div>
+
+                <!-- TEASER BOUNDARIES & ENDING HOOK -->
+                <div class="script-style-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 4rem;">
+                    <div class="stat-card glass" style="padding: 2.5rem; background: rgba(5, 5, 5, 0.9); border: 1px solid var(--accent-gold); text-align: center;">
+                        <label style="color: var(--accent-gold); font-size: 0.8rem; letter-spacing: 0.15rem;">THE TEASER PROMISE</label>
+                        <p id="outputTeaserPromise" style="font-family: var(--font-serif); font-size: 1.4rem; line-height: 1.4; color: var(--text-primary); margin-top: 1.5rem; font-weight: 300;"></p>
+                    </div>
+                    <div class="stat-card glass" style="padding: 2.5rem; background: rgba(25, 5, 5, 0.9); border: 1px solid var(--error); text-align: center;">
+                        <label style="color: var(--error); font-size: 0.8rem; letter-spacing: 0.15rem;">ENDING TENSION GOAL (NO RESOLUTION)</label>
+                        <p id="outputEndingTensionGoal" style="font-family: var(--font-serif); font-size: 1.5rem; line-height: 1.4; color: var(--error); margin-top: 1.5rem; font-weight: bold;"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-actions" style="margin-top: 5rem; text-align: center;">
+                <button id="stageBtn" class="secondary-btn" style="padding: 1.5rem 5rem; font-size: 1.1rem;">
+                    <span class="btn-text">Phase 02: Architecture Staging Flow</span>
+                    <span class="loader hidden"></span>
+                </button>
+            </div>
+        </section>
+
+        <!-- PHASE 2: THE EXECUTION (STAGING) -->
+        <section id="flowSection" class="results-section glass hidden" style="margin-top: 5rem;">
+            <div class="section-header" style="border-bottom: 1px solid var(--glass-border); padding-bottom: 2rem; margin-bottom: 4rem;">
+                <span class="label" style="color: var(--accent-gold); font-size: 0.8rem; letter-spacing: 0.3rem; text-transform: uppercase;">Phase 02: Teaser Editor</span>
+                <h2>Teaser Arc Architecture (Hook-Reveal-Payoff)</h2>
+            </div>
+
+            <div class="flow-content">
+                <div class="timeline-wrapper" style="margin-bottom: 5rem;">
+                    <ul id="outputTimeline" class="timeline-list"></ul>
+                </div>
+                
+                <div class="production-details-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 3rem;">
+                    <div class="detail-card glass" style="padding: 3rem;">
+                        <div class="stat-item" style="margin-top: 2rem;">
+                            <span style="font-size: 0.85rem; color: #4a90e2; letter-spacing: 0.1em;">NON-REPETITIVE SCENE AUDIT</span>
+                            <p id="outputNonRepetitiveAudit" style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-top: 0.8rem;"></p>
+                        </div>
+                        <div class="stat-item" style="margin-top: 2rem;">
+                            <span style="font-size: 0.85rem; color: var(--error); letter-spacing: 0.1em;">INCOMPLETENESS AUDIT</span>
+                            <p id="outputIncompletenessAudit" style="font-size: 1.1rem; margin-top: 0.8rem; line-height: 1.6; color: var(--text-primary);"></p>
+                        </div>
+                    </div>
+                    <div class="detail-card glass" style="padding: 3rem;">
+                        <label>Audio & Sound Arc</label>
+                        <div class="stat-item" style="margin-top: 2rem;">
+                            <span style="font-size: 0.85rem; color: var(--accent-gold); letter-spacing: 0.1em;">EVOLVING SCORE (19.5s)</span>
+                            <p id="outputSoundArc" style="font-size: 1.1rem; margin-top: 0.8rem; line-height: 1.6; color: var(--text-primary);"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-actions" style="margin-top: 5rem; text-align: center;">
+                <p id="outputEndingTensionGoal" style="font-size: 1.25rem; font-weight: bold; color: rgba(255,255,255,0.95); margin-top: 1.5rem; line-height: 1.4; text-transform: uppercase; font-family: var(--font-serif);"></p>
+                <button id="packageBtn" class="primary-btn" style="margin-top: 4rem; padding: 2rem 7rem; border-radius: 4px;">Assemble Production Package (Directorial Lock)</button>
+            </div>
+            
+        </section>
+
+        <!-- STAGING & TIMELINE PREVIEW -->
+        <section id="packageSection" class="results-section glass hidden" style="margin-top: 5rem;">
+            <div class="section-header" style="border-bottom: 1px solid var(--glass-border); padding-bottom: 2rem; margin-bottom: 4rem;">
+                <span class="label" style="color: var(--accent-gold); font-size: 0.8rem; letter-spacing: 0.3rem; text-transform: uppercase;">Directorial Production</span>
+                <h2>The Teaser Cinematic Extract (V33)</h2>
+            </div>
+
+            <div class="package-content">
+                <!-- VIDEO MONITOR -->
+                <div id="videoContainer" class="video-production-area full-width hidden" style="margin-bottom: 5rem;">
+                    <div class="production-overlay">
+                        <div class="production-loader"></div>
+                        <p id="productionStatus" style="font-family: var(--font-serif); font-size: 2.2rem; color: var(--accent-gold); letter-spacing: 0.3em; font-weight: 300;">PRODUCING LOCKED ARCHIVE...</p>
+                    </div>
+                    <video id="finalVideo" controls playsinline></video>
+                </div>
+
+                <!-- THE SHOT LOG (NO CHANGES ALLOWED) -->
+                <div class="clips-editor-wrapper">
+                    <div class="editor-header" style="text-align: center; margin-bottom: 5rem;">
+                        <h3 style="font-family: var(--font-serif); font-size: 3.5rem; font-weight: 300;">The Directed Final Cut</h3>
+                        <p style="color: var(--text-secondary); font-size: 1.2rem; margin-top: 1.5rem;">Total production adherence to the Cinematic Bible. No improvisation.</p>
+                    </div>
+                    
+                    <div class="clips-editor-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2.5rem; margin-bottom: 6rem;">
+                        <div class="clip-editor-card">
+                            <label style="color: var(--accent-gold); font-size: 0.85rem; text-transform: uppercase;">SHOT 1: SURPRISE - LOCKED</label>
+                            <textarea id="editClip1" rows="20" style="padding: 2rem;" readonly></textarea>
+                        </div>
+                        <div class="clip-editor-card">
+                            <label style="color: var(--accent-gold); font-size: 0.85rem; text-transform: uppercase;">SHOT 2: QUESTION - LOCKED</label>
+                            <textarea id="editClip2" rows="20" style="padding: 2rem;" readonly></textarea>
+                        </div>
+                        <div class="clip-editor-card">
+                            <label style="color: var(--accent-gold); font-size: 0.85rem; text-transform: uppercase;">SHOT 3: STAKES - LOCKED</label>
+                            <textarea id="editClip3" rows="20" style="padding: 2rem;" readonly></textarea>
+                        </div>
+                        <div class="clip-editor-card">
+                            <label style="color: var(--accent-gold); font-size: 0.85rem; text-transform: uppercase;">SHOT 4: SYMBOLIC PAYOFF - LOCKED</label>
+                            <textarea id="editClip4" rows="20" style="padding: 2rem;" readonly></textarea>
+                        </div>
+                    </div>
+
+                    <div class="production-trigger-zone" style="text-align: center; padding: 5rem 0;">
+                        <button id="btnProduceVideo" class="primary-btn" style="padding: 3rem 12rem; font-size: 2.2rem; border-radius: 4px; box-shadow: 0 0 70px rgba(212,175,55,0.2);">🎬 COMMENCE PRODUCTION</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 AuraDirector | Cinematic Coherence & Anti-Randomness Pipeline V33</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
