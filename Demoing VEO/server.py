@@ -13,6 +13,7 @@ import tempfile
 import uuid
 import shutil
 import random
+import datetime
 from aiohttp import web
 from google import genai
 from google.genai import types
@@ -32,8 +33,25 @@ VIDEO_MODEL = "veo-3.1-fast-generate-preview"
 if not API_KEY:
     print("⚠️ Warning: GOOGLE_API_KEY not found. Please set it in .env.")
 
-# Use standard Gemini API client (Vertex AI requires proper GCP IAM setup)
-client = genai.Client(api_key=API_KEY)
+# Use standard Gemini API client (v1alpha protocol required for Live API auth_tokens)
+client = genai.Client(api_key=API_KEY, http_options={"api_version": "v1alpha"})
+
+async def get_live_token(request):
+    """Generates an ephemeral token for the AuraDirector Voice Engine."""
+    try:
+        now = datetime.datetime.now(tz=datetime.timezone.utc)
+        token = client.auth_tokens.create(
+            config={
+                "uses": 10,
+                "expire_time": (now + datetime.timedelta(minutes=60)).isoformat(),
+                "new_session_expire_time": (now + datetime.timedelta(minutes=15)).isoformat(),
+            }
+        )
+        print(f"🎬 [Token Success] {token.name[:15]}...")
+        return web.json_response({"access_token": token.name})
+    except Exception as e:
+        print(f"🎬 [Token Error] {e}")
+        return web.json_response({"error": str(e)}, status=500)
 
 # V37: Global Throttling Lock (10 RPM ceiling)
 veo_throttle_lock = asyncio.Lock()
@@ -390,6 +408,7 @@ async def main():
     app.router.add_post("/api/package_execution", api_package_execution)
     app.router.add_post("/api/generate_video", api_generate_video)
     app.router.add_get("/api/video_status/{job_id}", api_video_status)
+    app.router.add_get("/api/live_token", get_live_token)
     app.router.add_get("/", serve_static_file)
     app.router.add_static("/static/", static_dir)
     app.router.add_get("/{path:.*}", serve_static_file)

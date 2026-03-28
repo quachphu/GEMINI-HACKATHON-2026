@@ -114,6 +114,7 @@
             padding-left: 35px; /* Offset for letter spacing */
             background: linear-gradient(#fff, #dbdde0, #4a90e2);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             text-transform: uppercase;
             animation: animEntrance 3s ease-out forwards;
@@ -200,6 +201,7 @@
         @keyframes pulse { 0% { opacity: 0.2; } 50% { opacity: 0.6; } 100% { opacity: 0.2; } }
 
     </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -213,17 +215,38 @@
     <div id="earth"></div>
 
     <div id="hero_content">
-        <h1 id="title">AuraDirector</h1>
+    <main>
+        <div id="ai_awakening" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer;">
+            <div class="logo" style="font-size: 3rem; margin-bottom: 2rem;">Aura<span>Director</span></div>
+            <div class="awakening-hint" style="color: var(--accent-gold); letter-spacing: 0.5rem; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 1rem;">AI DIRECTOR INITIALIZING...</div>
+            <div style="color: rgba(255,255,255,0.3); font-size: 0.6rem; letter-spacing: 0.2rem; text-transform: uppercase;">[SELF-HEALING LISTENERS SYNC V45.49]</div>
+        </div>
+
+        <section class="hero">
+        <h1 class="hero-title">AuraDirector</h1>
         <div id="subtitle">
             <span class="s1">DIRECT.</span>
             <span class="s2">BEYOND.</span>
             <span class="s3">REALITY.</span>
         </div>
+        </section>
+    </main>
     </div>
 
     <div id="launch_area">
         <h2 style="font-weight: 300; letter-spacing: 1rem; color: #fff; margin-bottom: 3rem;">V35 PARALLEL BURST READY</h2>
         <a href="app.html" class="launch-btn">Enter Laboratory</a>
+    </div>
+
+    <!-- V45: VOICE DIRECTOR INTERFACE -->
+    <div style="position: fixed; top: 2rem; right: 4rem; z-index: 1000; display: flex; align-items: center; gap: 2rem;">
+        <div id="liveStatus" class="hidden" style="display: flex; align-items: center; gap: 0.8rem; background: rgba(0, 242, 255, 0.1); padding: 0.8rem 1.5rem; border-radius: 100px; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-size: 0.75rem; letter-spacing: 0.1em; font-weight: bold;">
+            <div style="width: 8px; height: 8px; background: var(--accent-cyan); border-radius: 50%; box-shadow: 0 0 10px var(--accent-cyan); animation: pulse 1s infinite;"></div>
+            LIVE AI: <span id="liveStatusText">LISTENING</span>
+        </div>
+        <button id="micBtn" class="glass" style="width: 60px; height: 60px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+        </button>
     </div>
 
     <div class="scroll-hint">Scroll down to explore</div>
@@ -280,6 +303,8 @@
         window.addEventListener('scroll', updateLayout);
         window.addEventListener('load', updateLayout);
         updateLayout(); // Initial call
+
     </script>
+    <script src="aura_director_engine.js?v=45.49"></script>
 </body>
 </html>
