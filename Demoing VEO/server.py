@@ -32,6 +32,7 @@ VIDEO_MODEL = "veo-3.1-fast-generate-preview"
 if not API_KEY:
     print("⚠️ Warning: GOOGLE_API_KEY not found. Please set it in .env.")
 
+# Use standard Gemini API client (Vertex AI requires proper GCP IAM setup)
 client = genai.Client(api_key=API_KEY)
 
 # V37: Global Throttling Lock (10 RPM ceiling)
@@ -379,13 +380,18 @@ async def handle_cors(app, handler):
 
 async def main():
     app = web.Application(middlewares=[handle_cors])
+    
+    # Ensure static directory exists to prevent startup errors
+    static_dir = os.path.join(os.path.dirname(__file__), "static")
+    os.makedirs(static_dir, exist_ok=True)
+    
     app.router.add_post("/api/lock_bible", api_lock_bible)
     app.router.add_post("/api/stage_flow", api_stage_flow)
     app.router.add_post("/api/package_execution", api_package_execution)
     app.router.add_post("/api/generate_video", api_generate_video)
     app.router.add_get("/api/video_status/{job_id}", api_video_status)
     app.router.add_get("/", serve_static_file)
-    app.router.add_static("/static/", os.path.join(os.path.dirname(__file__), "static"))
+    app.router.add_static("/static/", static_dir)
     app.router.add_get("/{path:.*}", serve_static_file)
     runner = web.AppRunner(app)
     await runner.setup()
@@ -395,4 +401,5 @@ async def main():
 
 if __name__ == "__main__":
     try: asyncio.run(main())
-    except: print("\n👋 Server stopped")
+    except Exception as e:
+        print(f"\n👋 Server stopped. Error: {e}")
