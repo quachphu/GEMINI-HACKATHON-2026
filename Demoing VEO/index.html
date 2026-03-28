@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demoing VEO | Cinematic AI Director</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts: Inter for UI, Playfair Display for Cinematic headings -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+    <div class="background-glow"></div>
+    
+    <header>
+        <div class="logo">VEO<span>Director</span></div>
+        <div class="tagline">Cinematic Storytelling & AI Prompt Engineering</div>
+    </header>
+
+    <main class="container">
+        <!-- Input Section -->
+        <section class="input-section glass">
+            <h1>What is the vision?</h1>
+            <p class="subtitle">Enter a simple spark, a fragment of a dream, or a complete story beat.</p>
+            <div class="input-area-wrapper">
+                <textarea id="videoIdea" placeholder="Example: A lonely lighthouse keeper on a planet of endless storms, discovering an ancient signal from the waves..." rows="4"></textarea>
+                <div class="main-actions">
+                    <button id="step1Btn" class="primary-btn">
+                        <span class="btn-text">Generate Proposal</span>
+                        <span class="loader hidden"></span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 1: PROPOSAL -->
+        <section id="proposalSection" class="results-section glass hidden">
+            <div class="section-header">
+                <span class="label">Step 1: Proposal</span>
+                <h2 id="outputTitle">Project Title</h2>
+            </div>
+            
+            <div class="proposal-content">
+                <p id="outputLogline" class="logline"></p>
+                <p id="outputPitch" class="pitch-text"></p>
+                
+                <div class="grid-stats">
+                    <div class="stat">
+                        <label>Emotional Arc</label>
+                        <span id="outputArc"></span>
+                    </div>
+                    <div class="stat">
+                        <label>Visual Tone</label>
+                        <span id="outputTone"></span>
+                    </div>
+                    <div class="stat">
+                        <label>Story Soul (Meaning)</label>
+                        <span id="outputSoul" style="color: #ffcc00; font-weight: bold;"></span>
+                    </div>
+                    <div class="stat">
+                        <label>Character Archetype</label>
+                        <span id="outputArchetype"></span>
+                    </div>
+                    <div class="stat">
+                        <label>Visual Style</label>
+                        <span id="outputVisualStyle"></span>
+                    </div>
+                    <div class="stat">
+                        <label>Character Personality</label>
+                        <span id="outputCharacterPersonality"></span>
+                    </div>
+                    <div class="stat full-width">
+                        <label>Teaser Hook (The Moment)</label>
+                        <span id="outputTeaserHook" style="color: #0fdfaf; font-style: italic;"></span>
+                    </div>
+                </div>
+
+                <div class="director-statement">
+                    <h3>Director's Statement</h3>
+                    <p id="outputDirectorStatement"></p>
+                </div>
+            </div>
+
+            <div class="step-actions">
+                <button id="step2Btn" class="secondary-btn">
+                    <span class="btn-text">Generate Video Flow</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- STEP 2: VIDEO FLOW -->
+        <section id="flowSection" class="results-section glass hidden">
+            <div class="section-header">
+                <span class="label">Step 2: Video Flow Plan</span>
+                <h2>Production Timeline</h2>
+            </div>
+
+            <div class="flow-content">
+                <!-- NEW: PIVOTAL SCENE FOCUS -->
+                <div class="pivotal-scene-box glass" style="margin-bottom: 2rem; border-left: 4px solid #0fdfaf; padding: 1.5rem;">
+                    <h3 style="color: #0fdfaf; font-size: 1rem; margin-bottom: 0.5rem; text-transform: uppercase;">Final Video Focus: Pivotal Teaser Scene</h3>
+                    <p id="outputPivotalScene" style="font-style: italic; opacity: 0.9;"></p>
+                </div>
+
+                <div class="timeline-wrapper">
+                    <ul id="outputTimeline" class="timeline-list"></ul>
+                </div>
+                
+                <div class="flow-details-grid">
+                    <div class="detail-card">
+                        <h3>Visual Sequence</h3>
+                        <p id="outputSequence"></p>
+                    </div>
+                    <div class="detail-card">
+                        <h3>Transitions & Pacing</h3>
+                        <p id="outputTransitions"></p>
+                    </div>
+                    <div class="detail-card">
+                        <h3>Camera Direction</h3>
+                        <p id="outputCamera"></p>
+                    </div>
+                    <div class="detail-card">
+                        <h3>Sound & Music</h3>
+                        <p id="outputAudioGuidance"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="confirmation-box glass">
+                <p>Do you want to create the 20-second video based on this proposal and flow?</p>
+                <div class="confirm-actions">
+                    <button id="step3Btn" class="success-btn">Yes, Create Video</button>
+                    <button id="backBtn" class="danger-btn">No, Go Back</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 3: FINAL PACKAGE -->
+        <section id="packageSection" class="results-section glass hidden">
+            <div class="section-header">
+                <span class="label">Step 3: Final Production Package</span>
+                <h2>VEO Final Specifications</h2>
+            </div>
+
+            <!-- NEW: MASTER VISION CONTINUITY -->
+            <div class="master-vision-box glass" style="margin-bottom: 2rem; border-top: 4px solid #0fdfaf; padding: 1.5rem;">
+                <h3 style="color: #0fdfaf; font-size: 1rem; margin-bottom: 0.5rem; text-transform: uppercase;">Directing Continuity: Master Vision</h3>
+                <div class="vision-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; font-size: 0.9rem;">
+                    <div class="vision-item">
+                        <span class="field-label" style="color: var(--gold); font-size: 0.75rem;">MASTER CHARACTER IDENTIFIER</span>
+                        <p id="outputMasterCharacter" style="font-style: italic; opacity: 0.9;"></p>
+                    </div>
+                    <div class="vision-item">
+                        <span class="field-label" style="color: var(--gold); font-size: 0.75rem;">SHARED ENVIRONMENT GROUNDING</span>
+                        <p id="outputMasterEnvironment" style="font-style: italic; opacity: 0.9;"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="package-content">
+                <div class="master-prompt-area">
+                    <h3>Final Master VEO Prompt</h3>
+                    <div class="code-wrap">
+                        <pre id="outputMasterPrompt"></pre>
+                    </div>
+                </div>
+
+                <!-- VIDEO PLAYER SECTION -->
+                <div id="videoContainer" class="video-production-area full-width hidden">
+                    <div class="production-overlay">
+                        <div class="production-loader"></div>
+                        <p id="productionStatus">Producing your vision...</p>
+                    </div>
+                    <video id="finalVideo" controls playsinline src=""></video>
+                </div>
+
+                <div class="clip-prompts-area">
+                    <h3>Director's Review & Edit (3-Act 24s Teaser)</h3>
+                    <p class="field-label" style="margin-bottom: 1.5rem; color: #0fdfaf;">Refine the 10-point prompts below to ensure grounded realism and character flow.</p>
+                    
+                    <div class="clips-editor-grid">
+                        <div class="clip-editor-card glass">
+                            <label>Act 1: The Hook (0-8s)</label>
+                            <textarea id="editClip1" rows="8"></textarea>
+                        </div>
+                        <div class="clip-editor-card glass">
+                            <label>Act 2: The Conflict (8-16s)</label>
+                            <textarea id="editClip2" rows="8"></textarea>
+                        </div>
+                        <div class="clip-editor-card glass">
+                            <label>Act 3: The Soul (16-24s)</label>
+                            <textarea id="editClip3" rows="8"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="production-trigger-zone" style="margin-top: 2rem; text-align: center;">
+                        <button id="btnProduceVideo" class="btn-primary highlight" style="padding: 1.5rem 3rem; font-size: 1.2rem;">🎬 PRODUCE REFINED 24S VIDEO</button>
+                    </div>
+                </div>
+
+                <div class="guidance-grid">
+                    <div class="guide-card">
+                        <h3>Music Prompt</h3>
+                        <p id="outputMusicPrompt"></p>
+                    </div>
+                    <div class="guide-card">
+                        <h3>Voice/Dialogue Prompt</h3>
+                        <p id="outputVoicePrompt"></p>
+                    </div>
+                </div>
+
+                <div class="editing-instructions glass">
+                    <h3>Editing & Stitching Instructions</h3>
+                    <p id="outputEditingInstructions"></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 VEO Director Lab. Designed for AI Filmmakers.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
