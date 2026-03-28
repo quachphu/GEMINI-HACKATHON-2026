@@ -250,8 +250,12 @@ async def produce_single_shot(clip_idx, clip_data, job_id, video_dir):
                     continue
                 raise RuntimeError(f"Veo Error on Shot {clip_id}: {operation.error}")
             
-            if not operation.response or not operation.response.generated_videos:
-                raise RuntimeError(f"Veo Error: Shot {clip_id} failed.")
+            if not hasattr(operation, 'response') or not operation.response or not getattr(operation.response, 'generated_videos', None):
+                print(f"   ⚠️ [Safety/Glitch] Shot {clip_id} returned empty response. Retrying...")
+                if shot_attempt < max_shot_retries - 1:
+                    await asyncio.sleep(5)
+                    continue
+                raise RuntimeError(f"Veo Error: Shot {clip_id} failed with empty response.")
             
             generated_video = operation.response.generated_videos[0]
             clip_filename = f"clip_{job_id}_{clip_id}.mp4"
