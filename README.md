@@ -1,2 +1,2 @@
-# Nova-AI
+# Aura Director 
 UCLA GEMINI HACKATHON 
